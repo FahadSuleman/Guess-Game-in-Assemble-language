@@ -1,0 +1,91 @@
+INCLUDE C:\Users\Desktop\Irvine\Irvine32-master\Irvine32.inc
+INCLUDELIB C:\Users\Desktop\Irvine\Irvine32-master\Irvine32.lib
+
+.data
+msg byte "-------------------( You have only 3 lifes to guess the number )-------------------",0
+mainMsg BYTE "Enter a number b/w 0 and 10: ",0
+lessMsg BYTE "Oh! The number is less then your guess",0
+equalMsg BYTE "WOW! Your guess is correct the number is: ",0
+greaterMsg BYTE "Oh! The number is greater then your guess",0
+gameover BYTE "Game Over !Better Luck next time",0
+correct BYTE "Correct number is : ",0
+random dword ?
+life dword 0
+
+.code
+Main proc
+	mov eax,green+(white*16)
+	call SetTextColor
+call Randomize
+mov eax, 10
+call RandomRange
+mov random, eax
+call crlf
+mov edx, offset msg
+call writestring
+call crlf
+call crlf
+
+L1:
+	inc life
+	mov edx, offset mainMsg
+	call writestring
+	call readdec
+	call crlf
+	cmp eax, random
+	jl less
+	je equal
+	jg greater
+Loop L1
+
+less:
+	mov edx, offset greaterMsg
+	call writestring
+	call crlf
+	call crlf
+	call crlf
+	mov eax, life
+	cmp eax, 3
+	je gameo
+	jl L1
+
+equal:
+	mov edx, offset equalMsg
+	call writestring
+	mov edx, random
+	call writedec
+	call crlf
+	call crlf
+	jmp quit
+
+greater:
+	mov edx, offset lessMsg
+	call writestring
+	call crlf
+	call crlf
+	call crlf
+	mov eax, life
+	cmp eax, 3
+	je gameo
+	jl L1
+
+gameo:
+	mov eax,black+(white*16)
+	call SetTextColor
+	mov edx,offset correct
+	call WriteString
+	mov eax,random
+	call WriteInt
+	call Crlf
+	mov eax,green+(white*16)
+	call SetTextColor
+	mov edx,offset gameover
+	call WriteString
+	call Crlf
+	JMP quit
+
+
+quit:
+exit
+Main endp
+end
